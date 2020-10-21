@@ -86,6 +86,13 @@ const GraknClient = require("grakn-client");
 async function runBasicQueries (keyspace) {
 	const client = new GraknClient("localhost:48555");
 	const session = await client.session(keyspace);
+	
+	// Define a schema for the keyspace
+	const schemaWriteTransaction = await session.transaction().write();
+	const schemaDefinition = await schemaTransaction.query('define email sub attribute, value string;');
+	const schemaDefinition2 = await schemaTransaction.query('define person sub entity, has email;');
+	// After writing a define query, it must be commited to take effect.
+	await schemaTransaction.commit();
 
 	// Insert a person using a WRITE transaction
 	const writeTransaction = await session.transaction().write();
